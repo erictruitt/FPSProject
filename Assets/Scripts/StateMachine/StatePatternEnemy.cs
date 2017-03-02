@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -26,6 +24,12 @@ public class StatePatternEnemy : MonoBehaviour {
     [HideInInspector]
     public PatrolState m_patrolState;
     [HideInInspector]
+    public RetreatState m_retreatState;
+    [HideInInspector]
+    public AttackState m_attackState;
+    [HideInInspector]
+    public DeathState m_deathState;
+    [HideInInspector]
     public NavMeshAgent m_navMeshAgent;
 
 
@@ -34,6 +38,9 @@ public class StatePatternEnemy : MonoBehaviour {
         m_chaseState = new ChaseState(this);
         m_alertState = new AlertState(this);
         m_patrolState = new PatrolState(this);
+        m_retreatState = new RetreatState(this);
+        m_attackState = new AttackState(this);
+        m_deathState = new DeathState(this);
 
         m_navMeshAgent = GetComponent<NavMeshAgent>();
     }

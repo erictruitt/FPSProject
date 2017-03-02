@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PatrolState : IEnemyState {
 
@@ -38,6 +36,12 @@ public class PatrolState : IEnemyState {
     public void ToAlertAtate() { m_enemy.m_currentState = m_enemy.m_alertState; }
 
     public void ToChaseState() { m_enemy.m_currentState = m_enemy.m_chaseState; }
+
+    public void ToRetreatState() { }
+
+    public void ToAttackState() { }
+
+    public void ToDeathState() { }
 
     private void Look()
     {

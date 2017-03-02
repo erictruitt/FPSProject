@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ChaseState : IEnemyState
 {
@@ -21,12 +19,15 @@ public class ChaseState : IEnemyState
 
     public void ToPatrolState() { }
 
-    public void ToAlertAtate()
-    {
-        m_enemy.m_currentState = m_enemy.m_alertState;
-    }
+    public void ToAlertAtate() { m_enemy.m_currentState = m_enemy.m_alertState; }
 
     public void ToChaseState() { Debug.Log("Can't Transition Into Same State"); }
+
+    public void ToRetreatState() { }
+
+    public void ToAttackState() { }
+
+    public void ToDeathState() { }
 
     private void Look()
     {

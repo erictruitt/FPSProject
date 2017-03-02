@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AlertState : IEnemyState
 {
@@ -36,6 +34,12 @@ public class AlertState : IEnemyState
         m_enemy.m_currentState = m_enemy.m_chaseState;
         m_searchTimer = 0;
     }
+
+    public void ToRetreatState() { }
+
+    public void ToAttackState() { }
+
+    public void ToDeathState() { }
 
     private void Look()
     {

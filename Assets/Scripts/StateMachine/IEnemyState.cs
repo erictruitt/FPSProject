@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface IEnemyState {
 
@@ -13,4 +11,10 @@ public interface IEnemyState {
     void ToAlertAtate();
 
     void ToChaseState();
+
+    void ToRetreatState();
+
+    void ToAttackState();
+
+    void ToDeathState();
 }
