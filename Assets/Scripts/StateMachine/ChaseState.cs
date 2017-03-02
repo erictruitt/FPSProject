@@ -11,11 +11,13 @@ public class ChaseState : IEnemyState
 
     public void UpdateState()
     {
-        Look();
-        Chase();
+        //Look();
+        //Chase();
     }
 
     public void OnTriggerEnter(Collider _other) { }
+
+    public void OnTriggerExit(Collider _other) { }
 
     public void ToPatrolState() { }
 
@@ -29,23 +31,23 @@ public class ChaseState : IEnemyState
 
     public void ToDeathState() { }
 
-    private void Look()
-    {
-        RaycastHit hit;
-        Vector3 enemyToTarget = (m_enemy.m_chaseTarget.position + m_enemy.m_offset) - m_enemy.m_eyes.transform.position;
-        if (Physics.Raycast(m_enemy.m_eyes.transform.position, enemyToTarget, out hit, m_enemy.m_sightRange) && hit.collider.CompareTag("Player"))
-        {
-            m_enemy.m_chaseTarget = hit.transform;
-        }
-        else
-        {
-            ToAlertAtate();
-        }
-    }
+    //private void Look()
+    //{
+    //    RaycastHit hit;
+    //    Vector3 enemyToTarget = (m_enemy.m_chaseTarget.position + m_enemy.m_offset) - m_enemy.m_eyes.transform.position;
+    //    if (Physics.Raycast(m_enemy.m_eyes.transform.position, enemyToTarget, out hit, m_enemy.m_sightRange) && hit.collider.CompareTag("Player"))
+    //    {
+    //        m_enemy.m_chaseTarget = hit.transform;
+    //    }
+    //    else
+    //    {
+    //        ToAlertAtate();
+    //    }
+    //}
 
-    private void Chase()
-    {
-        m_enemy.m_navMeshAgent.SetDestination(m_enemy.m_chaseTarget.position);
-        m_enemy.m_navMeshAgent.Resume();
-    }
+    //private void Chase()
+    //{
+    //    m_enemy.m_navMeshAgent.SetDestination(m_enemy.m_chaseTarget.position);
+    //    m_enemy.m_navMeshAgent.Resume();
+    //}
 }

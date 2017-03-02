@@ -6,6 +6,8 @@ public interface IEnemyState {
 
     void OnTriggerEnter(Collider _other);
 
+    void OnTriggerExit(Collider _other);
+
     void ToPatrolState();
 
     void ToAlertAtate();

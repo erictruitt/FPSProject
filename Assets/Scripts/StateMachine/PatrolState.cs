@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public class PatrolState : IEnemyState {
+public class PatrolState : IEnemyState
+{
 
     private const float TIMETOWAIT = 5.0f;
 
@@ -19,7 +20,7 @@ public class PatrolState : IEnemyState {
 
     public void UpdateState()
     {
-        //Look();
+        Look();
         Patrol();
     }
 
@@ -27,7 +28,22 @@ public class PatrolState : IEnemyState {
     {
         if (_other.gameObject.CompareTag("Player"))
         {
-            //ToAlertAtate();
+            m_enemy.SetTargetInZone(true);
+            m_enemy.SetTargetGameObject(_other.gameObject);
+        }
+        else if (_other.gameObject.CompareTag("Radio"))
+        {
+            m_enemy.SetHasRadioLocation(true);
+            m_enemy.SetRadioLocation(_other.transform);
+        }
+    }
+
+    public void OnTriggerExit(Collider _other)
+    {
+        if (_other.gameObject.CompareTag("Player"))
+        {
+            m_enemy.SetTargetInZone(false);
+            m_enemy.SetTargetGameObject(null);
         }
     }
 
@@ -37,24 +53,43 @@ public class PatrolState : IEnemyState {
 
     public void ToChaseState() { m_enemy.m_currentState = m_enemy.m_chaseState; }
 
-    public void ToRetreatState() { }
+    public void ToRetreatState() { m_enemy.m_currentState = m_enemy.m_retreatState; }
 
-    public void ToAttackState() { }
+    public void ToAttackState() { m_enemy.m_currentState = m_enemy.m_attackState; }
 
-    public void ToDeathState() { }
+    public void ToDeathState() { m_enemy.m_currentState = m_enemy.m_deathState; }
 
     private void Look()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(m_enemy.m_eyes.transform.position, m_enemy.m_eyes.transform.forward, out hit, m_enemy.m_sightRange) && hit.collider.CompareTag("Player"))
+        if (m_enemy.GetTargetGameObject() == null)
+            return;
+
+        if (m_enemy.TargetInFOV())
         {
-            m_enemy.m_chaseTarget = hit.transform;
-            ToChaseState();
+            if (m_enemy.GetTargetInZone())
+            {
+                ToAttackState();
+            }
+            else
+            {
+                if (m_enemy.IsHealthCritical() || m_enemy.GetHasRadioLocation())
+                {
+                    ToRetreatState();
+                }
+                else
+                {
+                    ToChaseState();
+                }
+            }
+
         }
     }
 
     void Patrol()
     {
+        if (m_enemy.m_waypoints.Length == 0)
+            return;
+
         if (Time.time < m_waitTimer)
         {
             m_enemy.RotateTowards(m_enemy.m_waypoints[m_nextWaypoint].gameObject.transform);

@@ -2,8 +2,10 @@
 
 public class AlertState : IEnemyState
 {
+    private const float TIMETOWAIT = 5.0f;
+
     private readonly StatePatternEnemy m_enemy;
-    private float m_searchTimer;
+    private float m_alertMsgHoldTimer = -1.0f;
 
     public AlertState(StatePatternEnemy _statePatternEnemy)
     {
@@ -12,54 +14,58 @@ public class AlertState : IEnemyState
 
     public void UpdateState()
     {
-        Look();
-        Search();
+        if (m_alertMsgHoldTimer < 0.0f)
+        {
+            SetTimer();
+        }
+        else if (Time.time < m_alertMsgHoldTimer)
+        {
+            TransitionState();
+        }
     }
 
-    public void OnTriggerEnter(Collider _other)
-    {
+    public void OnTriggerEnter(Collider _other) { }
 
-    }
+    public void OnTriggerExit(Collider _other) { }
 
-    public void ToPatrolState()
-    {
-        m_enemy.m_currentState = m_enemy.m_patrolState;
-        m_searchTimer = 0;
-    }
+    public void ToPatrolState() { m_enemy.m_currentState = m_enemy.m_patrolState; }
 
     public void ToAlertAtate() { Debug.Log("Can't Transition Into Same State"); }
 
     public void ToChaseState()
     {
         m_enemy.m_currentState = m_enemy.m_chaseState;
-        m_searchTimer = 0;
+        m_alertMsgHoldTimer = -1.0f;
     }
 
-    public void ToRetreatState() { }
+    public void ToRetreatState() { m_enemy.m_currentState = m_enemy.m_retreatState; }
 
-    public void ToAttackState() { }
-
-    public void ToDeathState() { }
-
-    private void Look()
+    public void ToAttackState()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(m_enemy.m_eyes.transform.position, m_enemy.m_eyes.transform.forward, out hit, m_enemy.m_sightRange) && hit.collider.CompareTag("Player"))
+        m_enemy.m_currentState = m_enemy.m_attackState;
+        m_alertMsgHoldTimer = -1.0f;
+    }
+
+    public void ToDeathState() { m_enemy.m_currentState = m_enemy.m_deathState; }
+
+    private void SetTimer() { m_alertMsgHoldTimer += Time.deltaTime + TIMETOWAIT; }
+
+    private void TransitionState()
+    {
+        m_enemy.InstantiateReinforcements(3, m_enemy.GetRadioLocation().position);
+
+        if (m_enemy.RotateAway(m_enemy.GetRadioLocation()))
         {
-            m_enemy.m_chaseTarget = hit.transform;
+            if (m_enemy.TargetInFOV())
+            {
+                if (m_enemy.GetTargetInZone())
+                {
+                    ToAttackState();
+                    return;
+                }
+            }
+
             ToChaseState();
-        }
-    }
-
-    private void Search()
-    {
-        m_enemy.m_navMeshAgent.Stop();
-        m_enemy.transform.Rotate(0.0f, m_enemy.m_turnSpeed * Time.deltaTime, 0.0f);
-        m_searchTimer += Time.deltaTime;
-
-        if (m_searchTimer >= m_enemy.m_searchingDuration)
-        {
-            ToPatrolState();
         }
     }
 }

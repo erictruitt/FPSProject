@@ -11,6 +11,8 @@ public class RetreatState : IEnemyState
 
     public void OnTriggerEnter(Collider _other) { }
 
+    public void OnTriggerExit(Collider _other) { }
+
     public void ToPatrolState() { }
 
     public void ToAlertAtate() { }
